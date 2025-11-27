@@ -41,49 +41,55 @@ To design and simulate a seven-segment display driver using Verilog HDL, and ver
 ## Verilog Code for Seven-Segment Display  
 
 ```verilog
-// seven_segment_display.v
-module seven_segment_display (
-    input wire [3:0] binary_input,
-    output reg [6:0] seg_output
-);
-
-always @(*) begin
-    case (binary_input)
-        
-        
-        default: seg_output = 7'b0000000; // blank or error
-    endcase
-end
-
+module bcd_ss(bcd, seg);
+    input  [3:0] bcd;       
+    output reg [6:0] seg;
+    always @(*) begin
+        case(bcd)
+            4'b0000: seg = 7'b1111110;
+            4'b0001: seg = 7'b0110000;
+            4'b0010: seg = 7'b1101101;
+            4'b0011: seg = 7'b1111001;
+            4'b0100: seg = 7'b0110011;
+            4'b0101: seg = 7'b1011011;
+            4'b0110: seg = 7'b1011111;
+            4'b0111: seg = 7'b1110000;
+            4'b1000: seg = 7'b1111111;
+            4'b1001: seg = 7'b1111011;
+            default: seg = 7'b0000000;
+        endcase
+    end
 endmodule
 ```
 ## Testbench for Seven-Segment Display
 ```verilog
 
 `timescale 1ns / 1ps
-module seven_segment_display_tb;
-// Inputs
-reg [3:0] binary_input;
-// Outputs
-wire [6:0] seg_output;
-// Instantiate the Unit Under Test (UUT)
-seven_segment_display uut (
-    .binary_input(binary_input),
-    .seg_output(seg_output)
-);
-// Test procedure
-initial begin
-    // Initialize inputs
-    binary_input = 4'b0000;
-
-end
-
-
+module tb_bcd_ss;
+    reg [3:0] bcd;
+    wire [6:0] seg;
+    bcd_ss a1(bcd, seg);
+    initial begin
+        $monitor("Time = %0t | BCD = %d | SEG = %b", $time, bcd, seg);
+        bcd = 4'd0;
+        #5 bcd = 4'd1;
+        #5 bcd = 4'd2;
+        #5 bcd = 4'd3;
+        #5 bcd = 4'd4;
+        #5 bcd = 4'd5;
+        #5 bcd = 4'd6;
+        #5 bcd = 4'd7;
+        #5 bcd = 4'd8;
+        #5 bcd = 4'd9;
+        #5 bcd = 4'd10;
+        #5 $finish;
+    end
 endmodule
 ```
 ## Simulated Output
 
-_____ Keep Simulated output ___________
+<img width="1919" height="1079" alt="Screenshot 2025-09-17 130943" src="https://github.com/user-attachments/assets/893433ff-35ec-4b5d-8d3f-5925c35441bc" />
+
 
 ---
 
